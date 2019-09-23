@@ -1,19 +1,40 @@
 
 <template>
   <div class="h-tree-menu">
-      <template v-for="item in items">
-        <LHBTreeMenuItem
-          :key="item.key"
-          :data="item"
-          :parent="self"
-        ></LHBTreeMenuItem>
+    <transition-group name="tree-item">
+      <template v-for="item in list">
+        <LHBTreeMenuItem v-show="item.show" :key="item.key" :item="item" :parent="self"></LHBTreeMenuItem>
       </template>
+    </transition-group>
   </div>
 </template>
 
 <script>
 import LHBTreeMenuItem from "./LHBTreeMenuItem.vue";
 import Mocker from "../mock/TreeMenu.js";
+
+function initData(data) {
+  data.display = [data.root].concat(data.root.children);
+  data.list = listItems(data.root, 0);
+  data.root.parent = data.root;
+  data.header = data.root;
+  data.display.forEach( element => element.show = true);
+}
+
+function listItems(item, key) {
+  item.color || (item.color = Mocker.nextColor());
+  item.key = key
+  item.active = true;
+  item.show = false;
+  let tmpItems = [item];
+  item.children.forEach(element => {
+    element.parent = item;
+    let childItems = listItems(element, key + 1);
+    tmpItems = tmpItems.concat(childItems);
+    key += childItems.length;
+  });
+  return tmpItems;
+}
 
 export default {
   name: "LHBTreeMenu",
@@ -22,24 +43,25 @@ export default {
     LHBTreeMenuItem
   },
   data() {
-    var _data = Mocker();
-    _data.active = false;
+    var _data = Mocker.mock();
+    _data.active = true;
+    initData(_data);
+    // if (_data.display.length < Mocker.MAX_ITEM_NUM) {
+    //   _data.display.push(Mocker.mockItem);
+    // }
     return _data;
   },
   computed: {
     self() {
       return this;
     },
-    itemCount(){
-      return this.items.length;
-    },
-    activating(){
-      if (this.itemCount <= 0){
+    activating() {
+      if (this.display.length <= 0) {
         return false;
       }
-      let stat = this.items[0].active;
-      for (let i = 0; i < this.itemCount; ++i){
-        if (this.items[i].active != stat){
+      let stat = this.display[0].active;
+      for (let i = 1; i < this.display.length; ++i) {
+        if (this.display[i].active != stat) {
           return true;
         }
       }
@@ -49,9 +71,18 @@ export default {
   watch: {
     active() {
       let vm = this;
-      for (let i = 0; i < vm.items.length; ++i){
-        setTimeout(function(){vm.items[i].active = vm.active}, 50 * i);
+      for (let i = 0; i < vm.display.length; ++i) {
+        setTimeout(function() {
+          vm.display[i].active = vm.active;
+        }, 50 * i);
       }
+    },
+    header(newv, oriv) {
+      this.display = [newv].concat(newv.children);
+      oriv.show = false;
+      oriv.children.forEach(element => element.show = false);
+      newv.show = true;
+      newv.children.forEach(element => element.show = true);
     }
   }
 };
@@ -60,9 +91,19 @@ export default {
 <style lang="less" scoped>
 .h-tree-menu {
   height: 100%;
+  width: 100%;
+}
+
+.tree-item-move,
+.tree-item-enter-active,
+.tree-item-leave-active {
+  transition: all 0.5s;
+}
+.tree-item-enter,
+.tree-item-leave-to {
+  transition: all 0.5s;
+}
+.tree-item-leave-active {
   position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 20%;
 }
 </style>

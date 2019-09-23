@@ -15,5 +15,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import '../lesses/common.less';
+.h-header{
+  width: 100%;
+  height: 100%;
+}
 </style>
