@@ -1,15 +1,22 @@
 <template>
-  <div class="h-header" :style="{'background-color': color}">{{title}}</div>
+  <div class="h-header">
+    <LHBTierCard :content="content" :color="color"></LHBTierCard>
+  </div>
 </template>
 
 <script>
+import LHBTierCard from './LHBTierCard.vue'
+import util from '../js/utils/HeaderUtil.js'
+
 export default {
   name: "LHBHeader",
+  components:{
+    LHBTierCard
+  },
   props: ["color"],
   data(){
-    return {
-      title: "Header Title"
-    }
+    const _data = util.initData();
+    return _data;
   }
 }
 </script>

@@ -2,7 +2,7 @@
 <template>
   <div
     class="h-tree-menu-item"
-    :style="{'background-color':item.color, 'z-index': item.key}"
+    :style="{'background-color':item.color}"
     :class="{ 'h-tree-menu-item-emphasize': emphasize, 'h-tree-menu-item-no-emphasize': !emphasize, 'h-tree-menu-item-collapse': !item.expand, 'h-tree-menu-item-expand': item.expand}"
     @click="loadContent()"
     @mouseenter="expand()"
@@ -88,16 +88,15 @@ export default {
 }
 .h-tree-menu-digest-expand {
   width: 25%;
-  z-index: 999;
 }
 .h-tree-menu-content {
   cursor: pointer;
   width: 0%;
+  height: 100%;
   transition: all 0.5s;
 }
 .h-tree-menu-content-expand {
   width: 75%;
-  z-index: 999;
 }
 .h-tree-menu-digest-img {
 
@@ -118,6 +117,8 @@ export default {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  height: 100%;
+  width: 100%;
 }
 .h-tree-menu-item-emphasize {
   width: 120%;
@@ -126,8 +127,4 @@ export default {
 .h-tree-menu-item-no-emphasize {
   transition: all 0.5s;
 }
-</style>
-
-<style lang="less" scoped>
-@import "../lesses/common.less";
 </style>
