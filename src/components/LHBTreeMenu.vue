@@ -11,30 +11,7 @@
 
 <script>
 import LHBTreeMenuItem from "./LHBTreeMenuItem.vue";
-import Mocker from "../mock/TreeMenu.js";
-
-function initData(data) {
-  data.display = [data.root].concat(data.root.children);
-  data.list = listItems(data.root, 0);
-  data.root.parent = data.root;
-  data.header = data.root;
-  data.display.forEach( element => element.show = true);
-}
-
-function listItems(item, key) {
-  item.color || (item.color = Mocker.nextColor());
-  item.key = key
-  item.active = true;
-  item.show = false;
-  let tmpItems = [item];
-  item.children.forEach(element => {
-    element.parent = item;
-    let childItems = listItems(element, key + 1);
-    tmpItems = tmpItems.concat(childItems);
-    key += childItems.length;
-  });
-  return tmpItems;
-}
+import util from "../js/utils/TreeMenuUtil.js";
 
 export default {
   name: "LHBTreeMenu",
@@ -43,46 +20,48 @@ export default {
     LHBTreeMenuItem
   },
   data() {
-    var _data = Mocker.mock();
-    _data.active = true;
-    initData(_data);
-    // if (_data.display.length < Mocker.MAX_ITEM_NUM) {
-    //   _data.display.push(Mocker.mockItem);
-    // }
-    return _data;
+    return util.initData();
   },
   computed: {
     self() {
       return this;
-    },
-    activating() {
-      if (this.display.length <= 0) {
-        return false;
-      }
-      let stat = this.display[0].active;
-      for (let i = 1; i < this.display.length; ++i) {
-        if (this.display[i].active != stat) {
-          return true;
-        }
-      }
-      return false;
     }
   },
   watch: {
-    active() {
+    expand() {
+      this.expanding = true;
       let vm = this;
-      for (let i = 0; i < vm.display.length; ++i) {
-        setTimeout(function() {
-          vm.display[i].active = vm.active;
-        }, 50 * i);
+      let idx = 0;
+      const _expand = function() {
+        if (idx >= vm.display.length) {
+          vm.expanding = false;
+          return;
+        }
+        if (vm.expandTarget != vm.expand) {
+          idx = 0;
+          vm.expand = vm.expandTarget;
+        } else {
+          vm.display[idx].expand = vm.expand;
+        }
+        ++idx;
+        setTimeout(_expand, 50);
+      };
+      setTimeout(_expand, 50);
+    },
+    expandTarget() {
+      if (!this.expanding && this.expand !== this.expandTarget) {
+        this.expand = this.expandTarget;
       }
     },
     header(newv, oriv) {
-      this.display = [newv].concat(newv.children);
+      this.switching = true;
       oriv.show = false;
-      oriv.children.forEach(element => element.show = false);
-      newv.show = true;
-      newv.children.forEach(element => element.show = true);
+      oriv.children.forEach(element => (element.show = false));
+      newv.expand = newv.show = true;
+      newv.children.forEach(element => (element.expand = element.show = true));
+      this.display = [newv].concat(newv.children);
+      const vm = this;
+      setTimeout(() => (vm.switching = false), 500);
     }
   }
 };
@@ -101,6 +80,7 @@ export default {
 }
 .tree-item-enter,
 .tree-item-leave-to {
+  opacity: 0;
   transition: all 0.5s;
 }
 .tree-item-leave-active {

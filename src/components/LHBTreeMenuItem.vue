@@ -3,16 +3,16 @@
   <div
     class="h-tree-menu-item"
     :style="{'background-color':item.color, 'z-index': item.key}"
-    :class="{ 'h-tree-menu-item-emphasize': emphasize, 'h-tree-menu-item-no-emphasize': !emphasize, 'h-tree-menu-item-disactive': !item.active, 'h-tree-menu-item-active': item.active}"
+    :class="{ 'h-tree-menu-item-emphasize': emphasize, 'h-tree-menu-item-no-emphasize': !emphasize, 'h-tree-menu-item-collapse': !item.expand, 'h-tree-menu-item-expand': item.expand}"
     @click="loadContent()"
-    @mouseenter="activate()"
-    @mouseleave="disactivate()"
+    @mouseenter="expand()"
+    @mouseleave="collapse()"
   >
-    <div class="h-tree-menu-digest" :class="{ 'h-tree-menu-digest-active': item.active }">
+    <div class="h-tree-menu-digest" :class="{ 'h-tree-menu-digest-expand': item.expand }">
       <img v-if="item.ico" class="h-tree-menu-digest-img" :src="require(`../assets/${item.ico}`)" />
     </div>
 
-    <div class="h-tree-menu-content" :class="{ 'h-tree-menu-content-active': item.active }">
+    <div class="h-tree-menu-content" :class="{ 'h-tree-menu-content-expand': item.expand }">
       <div class="h-tree-menu-content-area">
         <p class="h-tree-menu-content-text">{{item.content}}</p>
       </div>
@@ -30,11 +30,19 @@ export default {
     };
   },
   methods: {
-    activate() {
-      // !this.parent.active && (this.parent.active = this.emphasize = true);
+    expand() {
+      this.emphasize = true;
+      if (this.switching){
+        return;
+      }
+      this.parent.expandTarget = true;
     },
-    disactivate() {
-      // this.parent.active && (this.parent.active = this.emphasize = false);
+    collapse() {
+      this.emphasize = false;
+      if (this.switching){
+        return;
+      }
+      this.parent.expandTarget;
     },
     loadContent() {
       if (!this.isHeader){
@@ -47,6 +55,14 @@ export default {
   computed: {
     isHeader(){
       return this.parent.header == this.item;
+    },
+    switching(){
+      return this.parent.switching;
+    }
+  },
+  watch:{
+    show(){
+      this.emphasize = false;
     }
   }
 };
@@ -59,10 +75,10 @@ export default {
   display: flex;
   transition: width 0.5s;
 }
-.h-tree-menu-item-disactive {
+.h-tree-menu-item-collapse {
   width: 25%;
 }
-.h-tree-menu-item-active {
+.h-tree-menu-item-expand {
   width: 100%;
 }
 .h-tree-menu-digest {
@@ -70,7 +86,7 @@ export default {
   width: 100%;
   transition: all 0.5s;
 }
-.h-tree-menu-digest-active {
+.h-tree-menu-digest-expand {
   width: 25%;
   z-index: 999;
 }
@@ -79,7 +95,7 @@ export default {
   width: 0%;
   transition: all 0.5s;
 }
-.h-tree-menu-content-active {
+.h-tree-menu-content-expand {
   width: 75%;
   z-index: 999;
 }
@@ -104,7 +120,7 @@ export default {
   -webkit-line-clamp: 3;
 }
 .h-tree-menu-item-emphasize {
-  transform: scale(1.2);
+  width: 120%;
   transition: all 0.5s;
 }
 .h-tree-menu-item-no-emphasize {
