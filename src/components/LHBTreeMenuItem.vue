@@ -42,7 +42,7 @@ export default {
       if (this.switching){
         return;
       }
-      this.parent.expandTarget;
+      this.parent.expandTarget = false;
     },
     loadContent() {
       if (!this.isHeader){
