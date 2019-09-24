@@ -1,17 +1,20 @@
 
 <template>
   <div class="h-panel">
-    <div class="h-panel-header">
-      <LHBHeader :color="headerColor"></LHBHeader>
+    <div class="h-panel-tree-menu">
+      <transition name="menu">
+        <LHBTreeMenu></LHBTreeMenu>
+      </transition>
     </div>
-    <div class="h-panel-body">
-      <div class="h-panel-tree-menu">
-        <transition name="menu">
-          <LHBTreeMenu></LHBTreeMenu>
-        </transition>
+    <div class="h-panel-content">
+      <div class="h-panel-header">
+        <LHBHeader :color="headerColor"></LHBHeader>
       </div>
-      <div class="h-panel-main">MAIN PANEL</div>
+      <div class="h-panel-body">
+        <div class="h-panel-main">MAIN PANEL</div>
+      </div>
     </div>
+    <div class="h-panel-comment"></div>
   </div>
 </template>
 
@@ -35,7 +38,7 @@ export default {
 
 <style lang="less" scoped>
 .h-panel {
-  // min-height: 100%;
+  display: flex;
   height: 100%;
 }
 .menu-move,
@@ -45,14 +48,26 @@ export default {
 }
 .menu-enter,
 .menu-leave-to {
-  // opacity: 0;
+  opacity: 0;
   transform: translateX(-100%);
 }
 .menu-leave-active {
   position: absolute;
 }
-.h-panel{
+.h-panel {
   widows: 100%;
+  height: 100%;
+}
+.h-panel-tree-menu {
+  flex: 2;
+  height: 100%;
+}
+.h-panel-content {
+  flex: 6;
+  height: 100%;
+}
+.h-panel-comment{
+  flex:2;
   height: 100%;
 }
 .h-panel-header {
@@ -60,19 +75,11 @@ export default {
   height: 10%;
 }
 .h-panel-body {
-  display: flex;
   width: 100%;
   height: 100%;
 }
-.h-panel-tree-menu {
-  position: relative;
-  width: 20%;
-  height: 100%;
-  top: -10%;
-  left: 0%;
-}
 .h-panel-main {
-  width: 60%;
+  width: 100%;
   height: 100%;
 }
 </style>

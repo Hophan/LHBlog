@@ -3,16 +3,16 @@
   <div
     class="h-tree-menu-item"
     :style="{'background-color':item.color}"
-    :class="{ 'h-tree-menu-item-emphasize': emphasize, 'h-tree-menu-item-no-emphasize': !emphasize, 'h-tree-menu-item-collapse': !item.expand, 'h-tree-menu-item-expand': item.expand}"
+    :class="{ 'h-tree-menu-item-emphasize': emphasize, 'h-tree-menu-item-no-emphasize': !emphasize, 'h-tree-menu-item-collapse': !expanded, 'h-tree-menu-item-expand': expanded}"
     @click="loadContent()"
     @mouseenter="expand()"
     @mouseleave="collapse()"
   >
-    <div class="h-tree-menu-digest" :class="{ 'h-tree-menu-digest-expand': item.expand }">
+    <div class="h-tree-menu-digest" :class="{ 'h-tree-menu-digest-expand': expanded }">
       <img v-if="item.ico" class="h-tree-menu-digest-img" :src="require(`../assets/${item.ico}`)" />
     </div>
 
-    <div class="h-tree-menu-content" :class="{ 'h-tree-menu-content-expand': item.expand }">
+    <div class="h-tree-menu-content" :class="{ 'h-tree-menu-content-expand': expanded }">
       <div class="h-tree-menu-content-area">
         <p class="h-tree-menu-content-text">{{item.content}}</p>
       </div>
@@ -55,6 +55,9 @@ export default {
   computed: {
     isHeader(){
       return this.parent.header == this.item;
+    },
+    expanded(){
+      return this.item.expand;// || this.isHeader;
     },
     switching(){
       return this.parent.switching;
