@@ -62,6 +62,7 @@ export default {
       this.display = [newv].concat(newv.children);
       const vm = this;
       setTimeout(() => (vm.switching = false), 500);
+      this.$emit("menu-click", newv);
     }
   }
 };
@@ -69,6 +70,7 @@ export default {
 
 <style lang="less" scoped>
 .h-tree-menu {
+  position: relative;
   height: 100%;
   width: 100%;
 }

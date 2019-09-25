@@ -57,7 +57,7 @@ export default {
       return this.parent.header == this.item;
     },
     expanded(){
-      return this.item.expand;// || this.isHeader;
+      return this.item.expand;
     },
     switching(){
       return this.parent.switching;

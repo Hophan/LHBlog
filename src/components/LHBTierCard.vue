@@ -1,30 +1,36 @@
 
 <template>
-  <div
-    class="h-tier-card"
-    :style="cardCls"
-    @click="click()"
-    @mouseenter="expandMe()"
-    @mouseleave="collapseMe()"
+  <div class="h-tier-card-box"
+        :style="{'flex-direction': flexDir}"
   >
-    <div class="h-tier-card-digest" 
+    <div
+      class="h-tier-card"
+      :style="cardCls"
+      @click="click"
+      @mouseenter="tierable && expandMe()"
+      @mouseleave="tierable && collapseMe()"
+    >
+      <div
+        class="h-tier-card-digest"
         :style="{
             'width': vertical ? '100%' : digestRate,
             'height': horizon ? '100%' : digestRate,
         }"
-    >
-      <img v-if="ico" class="h-tier-card-digest-img" :src="require(`../assets/${ico}`)" />
-      <div v-if="!ico" class="h-tier-card-digest-img">{{digest}}</div>
-    </div>
+      >
+        <img v-if="ico" class="h-tier-card-digest-img" :src="require(`../assets/${ico}`)" />
+        <div v-if="!ico" class="h-tier-card-digest-img">{{digest}}</div>
+      </div>
 
-    <div class="h-tier-card-content" 
+      <div
+        class="h-tier-card-content"
         :style="{
             'width': vertical ? '100%' : contentRate,
             'height': horizon ? '100%' : contentRate,
         }"
-    >
-      <div class="h-tier-card-content-area">
-        <div class="h-tier-card-content-text">{{content}}</div>
+      >
+        <div class="h-tier-card-content-area">
+          <div class="h-tier-card-content-text">{{content}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -33,11 +39,11 @@
 <script>
 export default {
   name: "LHBTierCard",
-  props: ["content", "ico", "digest", "color", "direction", "digestRange"],
+  props: ["content", "ico", "digest", "color", "direction", "digestPos", "tierable", "expanded"],
   data() {
     return {
       emphasize: false,
-      expand: false
+      expand: !!this.expanded
     };
   },
   methods: {
@@ -68,33 +74,51 @@ export default {
     horizon() {
       return !this.vertical;
     },
-    order(){
-        return this.top || this.left;
+    order() {
+      return this.top || this.left;
     },
-    reverse(){
-        return !this.order;
+    reverse() {
+      return !this.order;
     },
-    cardCls(){
-        const cls = {
-            'background-color': this.color,
-            'transition': 'all 0.5s',
-            'flex-direction': this.top ? 'column' : this. bottom ? 'column-reverse' : this.left ? 'row' : 'row-reverse'
-        };
-        const flexAt = this.vertical ? 'height': 'width';
-        cls[flexAt] = this.emphasize ? '120%' : this.expand ? '100%' : this.digestRange.collapse * 100 + '%';
-        return cls;
+    cardCls() {
+      const cls = {
+        "background-color": this.color,
+        "transition": "all 0.5s",
+        "flex-direction": this.flexDir
+      };
+      const flexAt = this.vertical ? "height" : "width";
+      cls[flexAt] = this.emphasize
+        ? "120%"
+        : this.expand
+        ? "100%"
+        : this.digestPos * 100 + "%";
+      return cls;
     },
-    digestRate(){
-       return this.expand ? this.digestRange.expand * 100 + '%' : '100%';
+    digestRate() {
+      return this.expand ? this.digestPos * 100 + "%" : "100%";
     },
-    contentRate(){
-       return this.expand ? (1 - this.digestRange.expand) * 100 + '%' : '0%';
+    contentRate() {
+      return this.expand ? (1 - this.digestPos) * 100 + "%" : "0%";
+    },
+    flexDir(){
+        return this.top
+          ? "column"
+          : this.bottom
+          ? "column-reverse"
+          : this.left
+          ? "row"
+          : "row-reverse";
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
+.h-tier-card-box{
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
 .h-tier-card {
   min-height: 10%;
   min-width: 10%;
@@ -108,19 +132,19 @@ export default {
   width: 100%;
 }
 .h-tier-card-digest {
-  cursor:pointer;
+  cursor: default;
   height: 100%;
   transition: all 0.5s;
 }
 .h-tier-card-content {
-  cursor:pointer;
+  cursor: default;
   height: 0%;
   width: 100%;
   transition: all 0.5s;
 }
 .h-tier-card-digest-img {
-//   max-height: 80%;
-//   max-width: 80%;
+  //   max-height: 80%;
+  //   max-width: 80%;
 }
 .h-tier-card-content-area {
   position: relative;

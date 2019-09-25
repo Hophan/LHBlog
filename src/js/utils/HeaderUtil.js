@@ -1,8 +1,8 @@
 import _ from "lodash";
 
 const DEFAULT_DATA = {
-  content: "Tier Card Content.",
-  digest: "Tier Card Digest"
+  content: "THIS IS TITLE!",
+  digest: ""
 };
 
 export default {

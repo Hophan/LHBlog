@@ -1,6 +1,6 @@
 <template>
   <div class="h-header">
-    <LHBTierCard :content="content" :color="color" :digest="digest" :direction="'bottom'" :digestRange="{collapse: 0.25, expand: 0.25}"></LHBTierCard>
+    <LHBTierCard :content="content" :color="color" :digest="digest" :direction="'top'" :digestPos="0" :tierable="false" :expanded="true"></LHBTierCard>
   </div>
 </template>
 
