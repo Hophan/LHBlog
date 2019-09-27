@@ -1,36 +1,32 @@
 
 <template>
-  <div class="h-tier-card-box"
-        :style="{'flex-direction': flexDir}"
-  >
+  <div :style="cardStyle">
+    <!-- digest -->
     <div
-      class="h-tier-card"
-      :style="cardCls"
+      class="h-tier-card-digest"
+      :style="digestStyle"
       @click="click"
-      @mouseenter="tierable && expandMe()"
-      @mouseleave="tierable && collapseMe()"
+      @mouseenter="expandMe"
+      @mouseleave="collapseMe"
     >
-      <div
-        class="h-tier-card-digest"
-        :style="{
-            'width': vertical ? '100%' : digestRate,
-            'height': horizon ? '100%' : digestRate,
-        }"
-      >
-        <img v-if="ico" class="h-tier-card-digest-img" :src="require(`../assets/${ico}`)" />
-        <div v-if="!ico" class="h-tier-card-digest-img">{{digest}}</div>
+      <div>
+        <slot name="digest">
+          <div class="h-tier-card-text">Digest here.</div>
+        </slot>
       </div>
-
-      <div
-        class="h-tier-card-content"
-        :style="{
-            'width': vertical ? '100%' : contentRate,
-            'height': horizon ? '100%' : contentRate,
-        }"
-      >
-        <div class="h-tier-card-content-area">
-          <div class="h-tier-card-content-text">{{content}}</div>
-        </div>
+    </div>
+    <!-- content -->
+    <div
+      class="h-tier-card-content"
+      :style="contentStyle"
+      @click="click"
+      @mouseenter="card.tierable && expandMe()"
+      @mouseleave="card.tierable && collapseMe()"
+    >
+      <div v-show="expand">
+        <slot name="content">
+          <div class="h-tier-card-text">Content here.</div>
+        </slot>
       </div>
     </div>
   </div>
@@ -39,134 +35,113 @@
 <script>
 export default {
   name: "LHBTierCard",
-  props: ["content", "ico", "digest", "color", "direction", "digestPos", "tierable", "expanded"],
+  props: {
+    card: {
+      type: Object,
+      validator: function(card) {
+        return (
+          ["top", "bottom", "left", "right"].indexOf(card.direction) !== -1 &&
+          card.digestPos >= 0 &&
+          card.digestPos <= 100
+        );
+      }
+    }
+  },
   data() {
     return {
       emphasize: false,
-      expand: !!this.expanded
+      expand: !!this.card.expanded
     };
   },
   methods: {
     expandMe() {
-      this.expand = true;
+      this.card.tierable && (this.expand = true);
+      this.card.emphasizable && (this.emphasize = true);
     },
     collapseMe() {
-      this.expand = false;
+      this.card.tierable && (this.expand = false);
+      this.card.emphasizable && (this.emphasize = false);
     },
-    click() {}
+    click() {
+      this.$emit("tier-card-click", this.data);
+    }
   },
   computed: {
     top() {
-      return this.direction === "top";
+      return this.card.direction === "top";
     },
     bottom() {
-      return this.direction === "bottom";
+      return this.card.direction === "bottom";
     },
     left() {
-      return this.direction === "left";
+      return this.card.direction === "left";
     },
     right() {
-      return this.direction === "right";
+      return this.card.direction === "right";
     },
-    vertical() {
-      return this.top || this.bottom;
+    flexAttr() {
+      return this.top || this.bottom ? "height" : "width";
     },
-    horizon() {
-      return !this.vertical;
+    fixedAttr() {
+      return this.left || this.right ? "height" : "width";
     },
-    order() {
-      return this.top || this.left;
+    flexDir() {
+      return this.top
+        ? "column"
+        : this.bottom
+        ? "column-reverse"
+        : this.left
+        ? "row"
+        : "row-reverse";
     },
-    reverse() {
-      return !this.order;
-    },
-    cardCls() {
-      const cls = {
-        "background-color": this.color,
-        "transition": "all 0.5s",
-        "flex-direction": this.flexDir
+    cardStyle() {
+      const style = {
+        display: "flex",
+        "flex-direction": this.flexDir,
+        width: this.emphasize ? "120%" : "100%",
+        height: this.emphasize ? "120%" : "100%"
       };
-      const flexAt = this.vertical ? "height" : "width";
-      cls[flexAt] = this.emphasize
-        ? "120%"
-        : this.expand
-        ? "100%"
-        : this.digestPos * 100 + "%";
-      return cls;
+      // style[this.fixedAttr] = this.emphasize ? "120%" : "100%";
+      return style;
     },
-    digestRate() {
-      return this.expand ? this.digestPos * 100 + "%" : "100%";
+    contentStyle() {
+      const style = {
+        "flex-grow": this.expand ? 1 : 0,
+        "background-color": this.card.color
+      };
+      style[this.flexAttr] = this.expand ? "100%" : "0";
+      return style;
     },
-    contentRate() {
-      return this.expand ? (1 - this.digestPos) * 100 + "%" : "0%";
-    },
-    flexDir(){
-        return this.top
-          ? "column"
-          : this.bottom
-          ? "column-reverse"
-          : this.left
-          ? "row"
-          : "row-reverse";
+    digestStyle() {
+      const style = {
+        "flex-basis": `${this.card.digestPos}%`,
+        "background-color": this.card.color
+      };
+      style[`max-${this.flexAttr}`] = `${this.card.digestPos}%`;
+      return style;
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.h-tier-card-box{
-    height: 100%;
-    width: 100%;
-    display: flex;
-}
-.h-tier-card {
-  min-height: 10%;
-  min-width: 10%;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  transition: width 0.5s;
-}
-.h-tier-card-expand {
-  height: 100%;
-  width: 100%;
-}
+@import "../lesses/base.less";
+
 .h-tier-card-digest {
   cursor: default;
-  height: 100%;
-  transition: all 0.5s;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 .h-tier-card-content {
   cursor: default;
-  height: 0%;
-  width: 100%;
-  transition: all 0.5s;
+  flex-basis: 0;
+  flex-shrink: 0;
 }
-.h-tier-card-digest-img {
-  //   max-height: 80%;
-  //   max-width: 80%;
-}
-.h-tier-card-content-area {
-  position: relative;
-  height: 80%;
-  width: 80%;
-  top: 10%;
-  left: 10%;
-}
-.h-tier-card-content-text {
+.h-tier-card-text {
   overflow: hidden;
   text-overflow: ellipsis;
+  word-wrap: break-word;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  height: 100%;
-  width: 100%;
-}
-.h-tier-card-emphasize {
-  height: 120%;
-  transition: all 0.5s;
-}
-.h-tier-card-no-emphasize {
-  transition: all 0.5s;
 }
 </style>

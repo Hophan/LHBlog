@@ -69,6 +69,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import '../lesses/base.less';
 .h-tree-menu {
   position: relative;
   height: 100%;
@@ -78,12 +79,12 @@ export default {
 .tree-item-move,
 .tree-item-enter-active,
 .tree-item-leave-active {
-  transition: all 0.5s;
+  transition: @normal-transition;
 }
 .tree-item-enter,
 .tree-item-leave-to {
   opacity: 0;
-  transition: all 0.5s;
+  transition: @normal-transition;
 }
 .tree-item-leave-active {
   position: absolute;

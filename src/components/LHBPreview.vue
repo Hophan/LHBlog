@@ -9,7 +9,7 @@
             :color="'white'"
             :digest="item.digest"
             :direction="'top'"
-            :digestPos="0.9"
+            :digestPos="90"
             :tierable="false"
             :expanded="true"
           ></LHBTierCard>
@@ -34,6 +34,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import '../lesses/base.less';
 .h-preview {
   width: 100%;
   height: 100%;

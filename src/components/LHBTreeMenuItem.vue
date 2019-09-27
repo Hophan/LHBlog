@@ -72,11 +72,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import '../lesses/base.less';
+
 .h-tree-menu-item {
   min-height: 10%;
   max-height: 10%;
   display: flex;
-  transition: width 0.5s;
+  transition: @normal-transition;
 }
 .h-tree-menu-item-collapse {
   width: 25%;
@@ -87,7 +89,7 @@ export default {
 .h-tree-menu-digest {
   cursor: pointer;
   width: 100%;
-  transition: all 0.5s;
+  transition: @normal-transition;
 }
 .h-tree-menu-digest-expand {
   width: 25%;
@@ -96,7 +98,7 @@ export default {
   cursor: pointer;
   width: 0%;
   height: 100%;
-  transition: all 0.5s;
+  transition: @normal-transition;
 }
 .h-tree-menu-content-expand {
   width: 75%;
@@ -125,9 +127,9 @@ export default {
 }
 .h-tree-menu-item-emphasize {
   width: 120%;
-  transition: all 0.5s;
+  transition: @normal-transition;
 }
 .h-tree-menu-item-no-emphasize {
-  transition: all 0.5s;
+  transition: @normal-transition;
 }
 </style>

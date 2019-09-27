@@ -7,18 +7,19 @@
     <div class="h-panel-body">
       <div class="h-panel-tree-menu">
         <transition name="menu">
-          <LHBTreeMenu @menu-click="menuClick"></LHBTreeMenu>
+          <!-- <LHBTreeMenu @menu-click="menuClick"></LHBTreeMenu> -->
+          <LHBListMenu></LHBListMenu>
         </transition>
       </div>
       <div class="h-panel-main">
-        <LHBPreview></LHBPreview>
+        <!-- <LHBPreview></LHBPreview> -->
       </div>
       <div class="h-panel-comment">
-        <LHBTierCard :content="'This is comment!'" :color="'#a34'" :direction="'right'" :digestPos="0" :tierable="true"></LHBTierCard>
+        <LHBTierCard :card="commentCard"></LHBTierCard>
       </div>
     </div>
     <div class="h-panel-foot">
-      <LHBTierCard :content="''" :color="headerColor" :digest="'This is foot!'" :direction="'bottom'" :digestPos="0.9" :tierable="true"></LHBTierCard>
+      <LHBTierCard :card="footCard"></LHBTierCard>
     </div>
   </div>
 </template>
@@ -28,6 +29,7 @@ import LHBHeader from "./LHBHeader.vue";
 import LHBTreeMenu from "./LHBTreeMenu.vue";
 import LHBTierCard from "./LHBTierCard.vue";
 import LHBPreview from "./LHBPreview.vue";
+import LHBListMenu from "./LHBListMenu.vue";
 
 export default {
   name: "LHBPanel",
@@ -35,23 +37,57 @@ export default {
     LHBHeader,
     LHBTreeMenu,
     LHBTierCard,
-    LHBPreview
+    LHBPreview,
+    LHBListMenu
   },
   data() {
     return {
       headerColor: "gray"
     };
   },
-  methods:{
-    menuClick(e){
-      console.log(e)
+  methods: {
+    menuClick(e) {
       this.headerColor = e.color;
+    }
+  },
+  computed: {
+    footCard() {
+      return {
+        content: "",
+        color: this.headerColor,
+        digest: "This is foot!",
+        direction: "bottom",
+        digestPos: 90,
+        tierable: true
+      };
+    },
+    commentCard() {
+      return {
+        content: "This is comment!",
+        color: "#a34",
+        direction: "right",
+        digestPos: 10,
+        tierable: true,
+        emphasizable: true
+      };
+    },
+    listItem(){
+      return {
+        content: "This is ListItem!",
+        color: "blue",
+        ico: "hophan.jpg",
+        direction: "left",
+        digestPos: 10,
+        tierable: true,
+        emphasizable: true
+      };
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
+@import '../lesses/base.less';
 .h-panel {
   display: flex;
   flex-direction: column;
@@ -61,7 +97,7 @@ export default {
 .menu-move,
 .menu-enter-active,
 .menu-leave-active {
-  transition: all 0.5s;
+  transition: @normal-transition;
 }
 .menu-enter,
 .menu-leave-to {
@@ -79,7 +115,7 @@ export default {
   flex: 6;
   width: 100%;
   height: 100%;
-  background-color: rgb(149, 149, 161)
+  background-color: rgb(149, 149, 161);
 }
 .h-panel-comment {
   flex: 2;
