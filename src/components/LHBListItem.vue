@@ -1,17 +1,20 @@
 
 <template>
-  <!-- <div> -->
-    <LHBTierCard :card="item" @tier-card-click="itemClick">
-      <template slot="digest">
-        <img v-if="item.ico" class="h-tree-menu-digest-img" :src="require(`../assets/${item.ico}`)" />
-      </template>
-      <template slot="content">
-        <div class="h-tree-menu-content-area">
-          <p class="h-tree-menu-content-text">{{item.content}}</p>
-        </div>
-      </template>
-    </LHBTierCard>
-  <!-- </div> -->
+  <LHBTierCard
+    :card="item"
+    @tier-card-click="itemClick"
+    @tier-card-expand="expand"
+    @tier-card-collapse="collapse"
+  >
+    <template slot="digest">
+      <img v-if="item.ico" class="h-tree-menu-digest-img" :src="require(`../assets/${item.ico}`)" />
+    </template>
+    <template slot="content">
+      <div class="h-tree-menu-content-area">
+        <p class="h-tree-menu-content-text">{{item.content}}</p>
+      </div>
+    </template>
+  </LHBTierCard>
 </template>
 
 <script>
@@ -20,12 +23,18 @@ import LHBTierCard from "./LHBTierCard.vue";
 export default {
   name: "LHBListItem",
   props: ["item"],
-  components:{
+  components: {
     LHBTierCard
   },
   methods: {
-    itemClick(e){
+    itemClick(e) {
       this.$emit("list-item-click", e);
+    },
+    expand() {
+      this.$emit("list-item-expand", this.item.key);
+    },
+    collapse() {
+      this.$emit("list-item-collapse", this.item.key);
     }
   }
 };

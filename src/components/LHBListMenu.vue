@@ -1,13 +1,9 @@
 
 <template>
   <div class="h-list-menu">
-    <!-- <transition-group name="list-item" class="h-list-menu"> -->
-      <template v-for="(item, i) in items">
-        <!-- <div  class="h-list-menu-item"> -->
-          <LHBListItem :key="i" :item="item" class="h-list-menu-item"></LHBListItem>
-        <!-- </div> -->
-      </template>
-    <!-- </transition-group> -->
+    <template v-for="item in items">
+      <LHBListItem :key="item.key" :item="item" class="h-list-menu-item" @list-item-expand="expand" @list-item-collapse="collapse"></LHBListItem>
+    </template>
   </div>
 </template>
 
@@ -23,6 +19,14 @@ export default {
   },
   data() {
     return util.initData();
+  },
+  methods: {
+    expand(key){
+      console.log("expand:" + key);
+    },
+    collapse(key){
+      console.log("collapse:" + key);
+    }
   }
 };
 </script>
@@ -36,8 +40,8 @@ export default {
 }
 .h-list-menu-item {
   flex-shrink: 1;
-  flex-grow:1;
-  flex-basis:0%;
+  flex-grow: 1;
+  flex-basis: 0%;
 }
 
 .list-item-enter,

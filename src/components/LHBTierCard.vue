@@ -20,8 +20,8 @@
       class="h-tier-card-content"
       :style="contentStyle"
       @click="click"
-      @mouseenter="card.tierable && expandMe()"
-      @mouseleave="card.tierable && collapseMe()"
+      @mouseenter="expandMe"
+      @mouseleave="collapseMe"
     >
       <div v-show="expand">
         <slot name="content">
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import util from "../js/utils/TierCardUtil.js";
+
 export default {
   name: "LHBTierCard",
   props: {
@@ -53,14 +55,27 @@ export default {
       expand: !!this.card.expanded
     };
   },
+  watch: {
+    expand(newv, oriv) {
+      this.$emit(newv ? "tier-card-expand" : "tier-card-collapse");
+    },
+    emphasize(newv, oriv) {
+      this.$emit(newv ? "tier-card-emphasize" : "tier-card-noemphasize");
+    }
+  },
+  beforeMount() {
+    // init changeStatus with Throttle method.
+    this.changeStatus = util.throttleChangeStatus(20);
+  },
   methods: {
+    changeStatus() {
+      // place holder.
+    },
     expandMe() {
-      this.card.tierable && (this.expand = true);
-      this.card.emphasizable && (this.emphasize = true);
+      this.changeStatus(true);
     },
     collapseMe() {
-      this.card.tierable && (this.expand = false);
-      this.card.emphasizable && (this.emphasize = false);
+      this.changeStatus(false);
     },
     click() {
       this.$emit("tier-card-click", this.data);
@@ -101,21 +116,21 @@ export default {
         width: this.emphasize ? "120%" : "100%",
         height: this.emphasize ? "120%" : "100%"
       };
-      // style[this.fixedAttr] = this.emphasize ? "120%" : "100%";
       return style;
     },
     contentStyle() {
       const style = {
         "flex-grow": this.expand ? 1 : 0,
-        "background-color": this.card.color
+        "background-color": this.card.contentColor || this.card.color
       };
       style[this.flexAttr] = this.expand ? "100%" : "0";
+      style[`max-${this.flexAttr}`] = `${100 - this.card.digestPos}%`;
       return style;
     },
     digestStyle() {
       const style = {
         "flex-basis": `${this.card.digestPos}%`,
-        "background-color": this.card.color
+        "background-color": this.card.digestColor || this.card.color
       };
       style[`max-${this.flexAttr}`] = `${this.card.digestPos}%`;
       return style;
@@ -134,7 +149,7 @@ export default {
 }
 .h-tier-card-content {
   cursor: default;
-  flex-basis: 0;
+  flex-basis: 0%;
   flex-shrink: 0;
 }
 .h-tier-card-text {

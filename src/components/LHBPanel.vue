@@ -19,7 +19,12 @@
       </div>
     </div>
     <div class="h-panel-foot">
-      <LHBTierCard :card="footCard"></LHBTierCard>
+      <!-- <div class="h-panel-foot-clock">
+        <LHBClock></LHBClock>
+      </div> -->
+    </div>
+    <div class="h-panel-clock">
+      <LHBClock></LHBClock>
     </div>
   </div>
 </template>
@@ -30,6 +35,7 @@ import LHBTreeMenu from "./LHBTreeMenu.vue";
 import LHBTierCard from "./LHBTierCard.vue";
 import LHBPreview from "./LHBPreview.vue";
 import LHBListMenu from "./LHBListMenu.vue";
+import LHBClock from "./LHBClock.vue";
 
 export default {
   name: "LHBPanel",
@@ -38,7 +44,8 @@ export default {
     LHBTreeMenu,
     LHBTierCard,
     LHBPreview,
-    LHBListMenu
+    LHBListMenu,
+    LHBClock
   },
   data() {
     return {
@@ -68,10 +75,10 @@ export default {
         direction: "right",
         digestPos: 10,
         tierable: true,
-        emphasizable: true
+        emphasizable: false
       };
     },
-    listItem(){
+    listItem() {
       return {
         content: "This is ListItem!",
         color: "blue",
@@ -87,7 +94,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import '../lesses/base.less';
+@import "../lesses/base.less";
 .h-panel {
   display: flex;
   flex-direction: column;
@@ -134,8 +141,16 @@ export default {
 }
 .h-panel-foot {
   position: fixed;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
   width: 100%;
   height: 3%;
   top: 97%;
+}
+.h-panel-clock {
+  position: absolute;
+  width: 5%;
+  height: 2%;
 }
 </style>

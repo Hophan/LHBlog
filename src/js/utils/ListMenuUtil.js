@@ -1,18 +1,5 @@
 import _ from "lodash";
-
-const DEFAULT_MENU_COLOR = [
-  "#c23531",
-  "#af5a5f",
-  "#61a0a8",
-  "#d48265",
-  "#91c7ae",
-  "#749f83",
-  "#ca8622",
-  "#bda29a",
-  "#6e7074",
-  "#546570",
-  "#c4ccd3"
-];
+import util from "./commonUtil.js"
 
 const DEFAULT_DATA = {
   items: [
@@ -61,7 +48,8 @@ const DEFAULT_DATA = {
 
 function initData() {
   const data = _.extend(DEFAULT_DATA, {});
-  _.forEach(data.items, item => {
+  _.forEach(data.items, (item, i) => {
+    item.key = i;
     item.color = nextColor();
     item.digestPos = 40;
     item.direction = "left";
@@ -74,8 +62,8 @@ function initData() {
 const nextColor = (function() {
   let idx = -1;
   return function() {
-    ++idx > DEFAULT_MENU_COLOR.length && (idx = 0);
-    return DEFAULT_MENU_COLOR[idx];
+    ++idx > util.DEFAULT_COLOR.length && (idx = 0);
+    return util.DEFAULT_COLOR[idx];
   };
 })();
 
