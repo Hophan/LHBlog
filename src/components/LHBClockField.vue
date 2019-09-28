@@ -3,13 +3,14 @@
     :card="{
         digestPos: digestPos,
         digestColor: color || defaultColor,
-        direction: direction,
+        direction: direction || 'top',
         tierable: false,
         emphasizable: false,
         expanded: true
       }"
+    :style="{flex: flexLevel}"
   >
-    <div style="overflow:hidden;" slot="digest">{{value}}</div>
+    <div style="overflow:hidden;" slot="digest">{{fieldValue}}</div>
     <div style="overflow:hidden;" slot="content"></div>
   </LHBTierCard>
 </template>
@@ -17,41 +18,36 @@
 <script>
 import LHBTierCard from "./LHBTierCard.vue";
 import util from "../js/utils/commonUtil.js";
+import clockUtil from "../js/utils/ClockUtil.js";
+
 export default {
   name: "LHBClockField",
   props: {
-    value: Number,
+    value: {
+      type: String,
+      validator(value) {
+        return clockUtil.timeValue(value) || clockUtil.separatorValue(value);
+      }
+    },
     color: String,
-    direction: String,
-    pos: Number
+    direction: String
   },
   components: {
     LHBTierCard
   },
   data() {
     return {
-      digestPos: this.pos
+      digestPos: 100,
+      fieldValue: this.value
     };
   },
   computed: {
     defaultColor() {
-      return util.DEFAULT_COLOR[this.value];
+      return 'white'//clockUtil.separatorValue(this.fieldValue) ? 'white' : util.DEFAULT_COLOR[this.fieldValue];
     },
-    // digestValue() {
-    //   return this.direction === "top" || this.direction === "left"
-    //     ? ""
-    //     : this.value;
-    // },
-    // contentValue() {
-    //   return this.direction === "top" || this.direction === "left"
-    //     ? this.value
-    //     : "";
-    // },
-    // realPos() {
-    //   return this.direction === "top" || this.direction === "left"
-    //     ? 100 - this.digestPos
-    //     : this.digestPos;
-    // }
+    flexLevel() {
+      return clockUtil.separatorValue(this.fieldValue) ? 1 : 5;
+    }
   }
 };
 </script>
