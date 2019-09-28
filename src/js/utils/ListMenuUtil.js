@@ -1,5 +1,5 @@
 import _ from "lodash";
-import util from "./commonUtil.js"
+import util from "./commonUtil.js";
 
 const DEFAULT_DATA = {
   items: [
