@@ -102,7 +102,7 @@ const internalRefresh = function(vm){
   function start() {
     vm.timmer = setInterval(function() {
       const postDate = new Date(new Date().getTime() + 500);
-      vm.second0Exist &&
+      second0Exist(vm.timeformat) &&
         (vm.$refs.s1[0].digestPos = vm.$refs.s1[0].digestPos === 0 ? 100 : 0);
       _.forEach(vm.fields, field => {
         const value = calculate(postDate, field);

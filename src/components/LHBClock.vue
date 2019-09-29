@@ -20,7 +20,7 @@ export default {
   },
   data() {
     const initDate = new Date();
-    const timeformat = this.format || "HH:mm";
+    const timeformat = this.format || "HH:mm:ss";
     return {
       timmer: undefined,
       timeformat: timeformat,
