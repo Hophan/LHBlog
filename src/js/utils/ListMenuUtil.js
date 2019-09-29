@@ -56,7 +56,7 @@ function initData() {
     item.tierable = true;
     item.emphasizable = true;
   });
-  return data;
+  return data.items;
 }
 
 const nextColor = (function() {
@@ -67,6 +67,19 @@ const nextColor = (function() {
   };
 })();
 
+const throttleExpandOrCollapse = function(delay) {
+  const throttleApply = util.throttleApply(function(status) {
+    _.forEach(this.items, item => {
+      item.expand = status;
+    });
+  }, delay);
+  return function(status) {
+    console.log("status:" + status);
+    throttleApply(this, status);
+  };
+};
+
 export default {
-  initData: initData
+  initData: initData,
+  throttleExpandOrCollapse: throttleExpandOrCollapse
 };

@@ -50,17 +50,21 @@ export default {
     }
   },
   data() {
-    return {
-      emphasize: false,
-      expand: !!this.card.expanded
-    };
+    const _data = this.card;
+    _data.emphasize = false;
+    _data.expand = !!this.card.expanded;
+    return _data;
+    // return {
+    //   emphasize: false,
+    //   expand: !!this.card.expanded
+    // };
   },
   watch: {
     expand(newv, oriv) {
-      this.$emit(newv ? "tier-card-expand" : "tier-card-collapse");
+      // this.$emit(newv ? "tier-card-expand" : "tier-card-collapse");
     },
     emphasize(newv, oriv) {
-      this.$emit(newv ? "tier-card-emphasize" : "tier-card-noemphasize");
+      // this.$emit(newv ? "tier-card-emphasize" : "tier-card-noemphasize");
     }
   },
   beforeMount() {

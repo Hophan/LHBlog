@@ -2,7 +2,13 @@
 <template>
   <div class="h-list-menu">
     <template v-for="item in items">
-      <LHBListItem :key="item.key" :item="item" class="h-list-menu-item" @list-item-expand="expand" @list-item-collapse="collapse"></LHBListItem>
+      <LHBListItem
+        :key="item.key"
+        :item="item"
+        class="h-list-menu-item"
+        @list-item-expand="expand"
+        @list-item-collapse="collapse"
+      ></LHBListItem>
     </template>
   </div>
 </template>
@@ -10,6 +16,7 @@
 <script>
 import LHBListItem from "./LHBListItem.vue";
 import util from "../js/utils/ListMenuUtil.js";
+import _ from "lodash";
 
 export default {
   name: "LHBListMenu",
@@ -18,15 +25,28 @@ export default {
     LHBListItem
   },
   data() {
-    return util.initData();
+    return {};
   },
   methods: {
-    expand(key){
-      console.log("expand:" + key);
+    changeExpandOrCollapse(){
+
     },
-    collapse(key){
-      console.log("collapse:" + key);
+    expand(key) {
+      // console.log("expand:" + key);
+      this.changeExpandOrCollapse(true);
+    },
+    collapse(key) {
+      // console.log("collapse:" + key);
+      this.changeExpandOrCollapse(false);
     }
+  },
+  computed: {
+    items() {
+      return util.initData();
+    }
+  },
+  mounted(){
+    this.changeExpandOrCollapse = util.throttleExpandOrCollapse(20);
   }
 };
 </script>
